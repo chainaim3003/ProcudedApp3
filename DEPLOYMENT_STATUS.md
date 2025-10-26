@@ -123,11 +123,38 @@ client = true
 constructor_args = "--platform_treasury me --marketplace_fee_rate 250"
 ```
 
+## 🌐 Testnet Deployment
+
+### Contract Details (Testnet)
+- **Network**: Stellar Testnet
+- **Contract ID**: `CDMAWTJWFQER7J2JRTJBTQHHUT3AICVAVDJGLJTE3RMIMMW5UDCRVCHX`
+- **WASM Hash**: `6c0117a13b0ce96829b09ed2acd62f11e020b5317abd58cd6a06aad157a22030`
+- **RPC URL**: https://soroban-testnet.stellar.org
+- **Explorer**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDMAWTJWFQER7J2JRTJBTQHHUT3AICVAVDJGLJTE3RMIMMW5UDCRVCHX)
+- **Transaction Hash**: [d59285994a701c4820fd3058b7f0c3ade87c02ccaf074f49e21b69f80e8fe09b](https://stellar.expert/explorer/testnet/tx/d59285994a701c4820fd3058b7f0c3ade87c02ccaf074f49e21b69f80e8fe09b)
+
+### Constructor Parameters (Testnet)
+- `platform_treasury`: GD66RNJFZEC7NACLA7P5YL6XUT4F66I7EBVBWVEQLLBOKPTE6J4XLOH3 (testnet-user)
+- `marketplace_fee_rate`: 250 (2.5%)
+
+### Verification
+```bash
+# Test contract is live
+~/.cargo/bin/stellar contract invoke \
+  --id CDMAWTJWFQER7J2JRTJBTQHHUT3AICVAVDJGLJTE3RMIMMW5UDCRVCHX \
+  --source testnet-user \
+  --network testnet \
+  -- get_all_buyers
+
+# Output: [] (empty array, no buyers registered yet)
+```
+
 ## ✨ Status Summary
 - ✅ Contract compiled successfully
 - ✅ Deployed to local network
+- ✅ Deployed to **Stellar Testnet** ⭐
 - ✅ TypeScript bindings generated
 - ✅ NPM package built
 - ✅ Ready for frontend integration
-- ⏳ Testnet deployment (requires stellar-registry CLI)
-- ⏳ Mainnet deployment (requires stellar-registry CLI)
+- ✅ Verified on testnet (contract callable and functional)
+- ⏳ Mainnet deployment (when ready)
