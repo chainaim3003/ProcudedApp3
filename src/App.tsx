@@ -4,6 +4,9 @@ import ConnectAccount from "./components/ConnectAccount.tsx";
 import { Routes, Route, Outlet, NavLink } from "react-router-dom";
 import Home from "./pages/Home";
 import Debugger from "./pages/Debugger.tsx";
+import Exporter from "./pages/Exporter.tsx";
+import Importer from "./pages/Importer.tsx";
+import Marketplace from "./pages/Marketplace.tsx";
 
 const AppLayout: React.FC = () => (
   <main>
@@ -12,7 +15,55 @@ const AppLayout: React.FC = () => (
       projectTitle="My App"
       contentRight={
         <>
-          <nav>
+          <nav style={{ display: "flex", gap: "0.5rem" }}>
+            <NavLink
+              to="/exporter"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {({ isActive }) => (
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  disabled={isActive}
+                >
+                  📦 Exporter
+                </Button>
+              )}
+            </NavLink>
+            <NavLink
+              to="/importer"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {({ isActive }) => (
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  disabled={isActive}
+                >
+                  🏪 Importer
+                </Button>
+              )}
+            </NavLink>
+            <NavLink
+              to="/marketplace"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {({ isActive }) => (
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  disabled={isActive}
+                >
+                  💰 Marketplace
+                </Button>
+              )}
+            </NavLink>
             <NavLink
               to="/debug"
               style={{
@@ -58,6 +109,9 @@ function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/exporter" element={<Exporter />} />
+        <Route path="/importer" element={<Importer />} />
+        <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/debug" element={<Debugger />} />
         <Route path="/debug/:contractName" element={<Debugger />} />
       </Route>
