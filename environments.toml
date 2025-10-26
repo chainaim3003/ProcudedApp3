@@ -32,13 +32,7 @@ name = "testnet-user"
 default = true
 
 [staging.contracts]
-# soroban-atomic-swap-contract = { id = "C123..." }
-# soroban-auth-contract = { id = "C234..." }
-# soroban-errors-contract = { id = "C345..." }
-# soroban-hello-world-contract = { id = "C456..." }
-# soroban-increment-contract = { id = "C567..." }
-# soroban-token-contract = { id = "C678..." }
-# eurc = { id = "C789..." }
+marketplace_escrow_v1 = { id = "CDMAWTJWFQER7J2JRTJBTQHHUT3AICVAVDJGLJTE3RMIMMW5UDCRVCHX", client = true }
 
 ### Production environment configuration
 [production.network]
