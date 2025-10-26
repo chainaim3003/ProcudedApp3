@@ -7,6 +7,7 @@ import Debugger from "./pages/Debugger.tsx";
 import Exporter from "./pages/Exporter.tsx";
 import Importer from "./pages/Importer.tsx";
 import Marketplace from "./pages/Marketplace.tsx";
+import MarketplaceAdmin from "./pages/MarketplaceAdmin.tsx";
 
 const AppLayout: React.FC = () => (
   <main>
@@ -16,22 +17,6 @@ const AppLayout: React.FC = () => (
       contentRight={
         <>
           <nav style={{ display: "flex", gap: "0.5rem" }}>
-            <NavLink
-              to="/exporter"
-              style={{
-                textDecoration: "none",
-              }}
-            >
-              {({ isActive }) => (
-                <Button
-                  variant="tertiary"
-                  size="md"
-                  disabled={isActive}
-                >
-                  📦 Exporter
-                </Button>
-              )}
-            </NavLink>
             <NavLink
               to="/importer"
               style={{
@@ -44,7 +29,23 @@ const AppLayout: React.FC = () => (
                   size="md"
                   disabled={isActive}
                 >
-                  🏪 Importer
+                  🏪 Buyer (Importer)
+                </Button>
+              )}
+            </NavLink>
+            <NavLink
+              to="/exporter"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {({ isActive }) => (
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  disabled={isActive}
+                >
+                  📦 Seller (Exporter)
                 </Button>
               )}
             </NavLink>
@@ -61,6 +62,22 @@ const AppLayout: React.FC = () => (
                   disabled={isActive}
                 >
                   💰 Marketplace
+                </Button>
+              )}
+            </NavLink>
+            <NavLink
+              to="/admin"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {({ isActive }) => (
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  disabled={isActive}
+                >
+                  👥 Admin
                 </Button>
               )}
             </NavLink>
@@ -109,9 +126,10 @@ function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/exporter" element={<Exporter />} />
         <Route path="/importer" element={<Importer />} />
+        <Route path="/exporter" element={<Exporter />} />
         <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/admin" element={<MarketplaceAdmin />} />
         <Route path="/debug" element={<Debugger />} />
         <Route path="/debug/:contractName" element={<Debugger />} />
       </Route>

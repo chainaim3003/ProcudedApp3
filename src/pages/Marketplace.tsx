@@ -1,61 +1,37 @@
 /**
- * Marketplace - Simplified Version
+ * Marketplace - Stellar Version with Real Contract Integration
  */
 import React, { useState, useEffect } from 'react'
 import { Layout, Text } from "@stellar/design-system"
-
-const TRADE_STATES = {
-  CREATED: 0,
-  ESCROWED: 1,
-  EXECUTED: 2,
-}
-
-interface EscrowTrade {
-  tradeId: number
-  buyer: string
-  seller: string
-  amount: number
-  state: number
-  productType: string
-  description: string
-}
+import { stellarMarketplaceService, TRADE_STATES, EscrowTrade, MARKETPLACE_CONTRACT_ID } from '../services/stellarMarketplace'
 
 export default function Marketplace() {
   const [trades, setTrades] = useState<EscrowTrade[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string>('')
   const [activeTab, setActiveTab] = useState<'awaiting' | 'escrowed' | 'all'>('awaiting')
 
   useEffect(() => {
-    const mockTrades: EscrowTrade[] = [
-      {
-        tradeId: 101,
-        buyer: 'GB...XYZ',
-        seller: 'GC...ABC',
-        amount: 150000,
-        state: TRADE_STATES.CREATED,
-        productType: 'Textiles',
-        description: 'Cotton Fabric Export - 10 tons',
-      },
-      {
-        tradeId: 102,
-        buyer: 'GB...XYZ',
-        seller: 'GC...DEF',
-        amount: 75000,
-        state: TRADE_STATES.CREATED,
-        productType: 'Food-Tea',
-        description: 'Premium Tea Export - 2 tons',
-      },
-      {
-        tradeId: 103,
-        buyer: 'GB...XYZ',
-        seller: 'GC...GHI',
-        amount: 200000,
-        state: TRADE_STATES.ESCROWED,
-        productType: 'Electronics',
-        description: 'Electronics Components - Bulk',
-      }
-    ]
-    setTrades(mockTrades)
+    loadTrades()
   }, [])
+
+  const loadTrades = async () => {
+    try {
+      setLoading(true)
+      setError('')
+      console.log('📡 Loading trades from Stellar contract...')
+      
+      const tradesData = await stellarMarketplaceService.getAllTrades()
+      setTrades(tradesData)
+      
+      console.log(`✅ Loaded ${tradesData.length} trades from contract`)
+    } catch (err) {
+      console.error('❌ Error loading trades:', err)
+      setError('Failed to load trades from contract. Please check console for details.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredTrades = trades.filter(trade => {
     if (activeTab === 'awaiting') return trade.state === TRADE_STATES.CREATED
@@ -64,22 +40,52 @@ export default function Marketplace() {
   })
 
   const handleFund = async (tradeId: number) => {
-    alert(`Funding trade #${tradeId} - This is a demo`)
-    setTrades(prev => prev.map(t => 
-      t.tradeId === tradeId ? { ...t, state: TRADE_STATES.ESCROWED } : t
-    ))
+    alert(`Funding trade #${tradeId} - Integration with wallet coming soon`)
+    // Wallet integration would go here
+  }
+
+  if (loading) {
+    return (
+      <Layout.Content>
+        <Layout.Inset>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+            <Text as="p" size="lg">Loading trades from Stellar contract...</Text>
+            <Text as="p" size="sm" style={{ color: '#666', marginTop: '0.5rem' }}>
+              Contract: {MARKETPLACE_CONTRACT_ID}
+            </Text>
+          </div>
+        </Layout.Inset>
+      </Layout.Content>
+    )
   }
 
   return (
     <Layout.Content>
       <Layout.Inset>
         <div style={{ padding: '2rem' }}>
-          <Text as="h1" size="xl" style={{ marginBottom: '1rem' }}>
-            💰 Escrow V5 Marketplace
+          <Text as="h1" size="xl" style={{ marginBottom: '0.5rem' }}>
+            💰 Marketplace Escrow
           </Text>
-          <Text as="p" size="md" style={{ marginBottom: '2rem', color: '#666' }}>
+          <Text as="p" size="md" style={{ marginBottom: '1rem', color: '#666' }}>
             Secure trade financing with smart contract escrow protection
           </Text>
+          <Text as="p" size="sm" style={{ marginBottom: '2rem', color: '#999', fontFamily: 'monospace' }}>
+            Contract: {MARKETPLACE_CONTRACT_ID}
+          </Text>
+
+          {error && (
+            <div style={{ 
+              padding: '1rem', 
+              background: '#fee', 
+              border: '1px solid #fcc',
+              borderRadius: '8px',
+              marginBottom: '2rem',
+              color: '#c00'
+            }}>
+              ⚠️ {error}
+            </div>
+          )}
 
           {/* Stats */}
           <div style={{ 
@@ -164,7 +170,14 @@ export default function Marketplace() {
             {filteredTrades.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📭</div>
-                <Text as="p" size="md">No trades in this category</Text>
+                <Text as="p" size="md" style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  No trades in this category
+                </Text>
+                <Text as="p" size="sm" style={{ color: '#666' }}>
+                  {trades.length === 0 
+                    ? 'No trades have been created in the contract yet.'
+                    : 'Switch tabs to view other trade categories.'}
+                </Text>
               </div>
             ) : (
               filteredTrades.map((trade) => (
@@ -227,7 +240,7 @@ export default function Marketplace() {
                         Buyer
                       </div>
                       <div style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                        {trade.buyer}
+                        {trade.buyer.slice(0, 4)}...{trade.buyer.slice(-4)}
                       </div>
                     </div>
                     <div>
@@ -235,7 +248,7 @@ export default function Marketplace() {
                         Seller
                       </div>
                       <div style={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                        {trade.seller}
+                        {trade.seller.slice(0, 4)}...{trade.seller.slice(-4)}
                       </div>
                     </div>
                     <div>
@@ -243,7 +256,9 @@ export default function Marketplace() {
                         Status
                       </div>
                       <div style={{ fontWeight: '600', fontSize: '0.875rem' }}>
-                        {trade.state === TRADE_STATES.CREATED ? 'Created' : 'Escrowed'}
+                        {trade.state === TRADE_STATES.CREATED ? 'Created' : 
+                         trade.state === TRADE_STATES.ESCROWED ? 'Escrowed' : 
+                         trade.state === TRADE_STATES.COMPLETED ? 'Completed' : 'In Progress'}
                       </div>
                     </div>
                   </div>
